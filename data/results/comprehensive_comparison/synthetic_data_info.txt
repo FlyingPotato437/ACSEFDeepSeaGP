@@ -1,0 +1,5 @@
+Synthetic Paleoclimate Data Information:
+- Age range: 0-500 kyr
+- Base number of data points: 80
+- Irregularity factor: 0.7
+- Proxies: d18O, UK37

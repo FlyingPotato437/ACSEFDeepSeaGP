@@ -1,0 +1,9 @@
+Transition Detection Metrics:
+True transitions: [np.float64(123.24649298597193), np.float64(125.250501002004), np.float64(423.8476953907815), np.float64(465.93186372745487), np.float64(488.9779559118236)]
+Detected transitions: [np.float64(120.74148296593185), np.float64(155.81162324649296), np.float64(221.9438877755511), np.float64(237.97595190380758), np.float64(444.3887775551102)]
+Precision: 0.2000
+Recall: 0.2000
+F1 Score: 0.2000
+Mean Detection Error: 2.5050 kyr
+Unmatched true transitions: [np.float64(125.250501002004), np.float64(423.8476953907815), np.float64(465.93186372745487), np.float64(488.9779559118236)]
+Unmatched detected transitions: [np.float64(155.81162324649296), np.float64(221.9438877755511), np.float64(237.97595190380758), np.float64(444.3887775551102)]
