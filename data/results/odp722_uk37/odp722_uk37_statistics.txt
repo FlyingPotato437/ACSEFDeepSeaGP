@@ -1,0 +1,12 @@
+ODP722 UK37-Only Analysis Statistics
+=================================
+
+Age Range: 7.11 to 3330.48 kyr
+Mean SST: 27.13°C
+Median SST: 27.24°C
+SST Range: 24.10°C to 29.90°C (5.81°C)
+Mean 95% CI Width: 4.79°C
+Training Time: 97.58 seconds
+
+Detected Transitions:
+  No significant transitions detected

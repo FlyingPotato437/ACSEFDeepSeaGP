@@ -1,134 +1,108 @@
+#!/usr/bin/env python3
 """
-Quick Start Demo for Enhanced Bayesian GP State-Space Model
-
-This script provides a quick demonstration of the enhanced Bayesian GP State-Space 
-model for paleoclimate reconstruction with a focus on multi-proxy weighting, 
-adaptive kernel lengthscales, multi-scale periodic components, heteroscedastic
-noise modeling, and MCMC uncertainty quantification.
+Matplotlib-Style quick start demo for paleoclimate reconstruction
+With detailed structure and less smoothing
 """
 
+import os
+import sys
+import time
 import numpy as np
 import matplotlib.pyplot as plt
-import os
-from models.bayesian_gp_state_space import BayesianGPStateSpaceModel, generate_synthetic_multiproxy_data
+import warnings
+
+# Import the matplotlib-inspired model
+from models.multi_output_bayesian_gp_state_space import MultiOutputBayesianGP
+
+# Suppress warnings
+warnings.filterwarnings("ignore")
 
 
-def run_quick_demo():
-    """Run a quick demonstration of the model."""
-    # Create output directory
-    output_dir = "data/results/quick_demo"
-    os.makedirs(output_dir, exist_ok=True)
+def run_quick_demo(csv_file="ODP722.csv", output_dir="outputs"):
+    """
+    Run the demonstration using matplotlib-style approach
     
-    print("=====================================================")
-    print("Enhanced Bayesian GP State-Space Model Quick Demo")
-    print("=====================================================")
-    print("\nThis demonstration shows how the model handles:")
-    print("  1. Multi-proxy weighting with balanced influence")
-    print("  2. Adaptive kernel lengthscales for abrupt transitions")
-    print("  3. Multi-scale periodic components for orbital cycles")
-    print("  4. Heteroscedastic noise modeling")
-    print("  5. MCMC uncertainty quantification\n")
-    
-    print("Generating synthetic multi-proxy data...")
-    # Generate synthetic data with known features
-    data = generate_synthetic_multiproxy_data(
-        n_points=60,               # Sparse sampling
-        age_min=0,                 # Age range in kyr
-        age_max=500,
-        proxy_types=['d18O', 'UK37', 'Mg_Ca'],  # Multiple proxy types
-        n_transitions=3,           # Add abrupt transitions
-        transition_magnitude=3.0,  # Large transitions
-        include_orbital_cycles=True,  # Include Milankovitch cycles
-        smoothness=1.0,
-        proxy_noise_scale=1.2,     # Realistic noise levels
-        random_state=42
-    )
-    
-    # Configure kernel
-    kernel_config = {
-        'base_kernel_type': 'matern',   # Matern kernel base
-        'min_lengthscale': 2.0,         # Minimum physically meaningful lengthscale
-        'max_lengthscale': 10.0,        # Maximum lengthscale
-        'base_lengthscale': 5.0,        # Base lengthscale
-        'adaptation_strength': 1.5,     # How strongly to adapt to transitions
-        'lengthscale_regularization': 0.1,  # Prevent unrealistic fluctuations
-        'include_periodic': True,       # Include Milankovitch components
-        'periods': [100.0, 41.0, 23.0],  # Eccentricity, obliquity, precession
-        'outputscales': [2.0, 1.0, 0.5]  # Relative weights
-    }
-    
-    # Configure MCMC (reduced samples for quick demo)
-    mcmc_config = {
-        'n_samples': 300,
-        'burn_in': 60,
-        'thinning': 2,
-        'step_size': 0.05,
-        'target_acceptance': 0.6,
-        'adaptation_steps': 30
-    }
-    
-    # Disable MCMC temporarily until we resolve compatibility issues
-    run_mcmc = False
-    
-    print("Initializing model with advanced components...")
-    # Initialize model
-    model = BayesianGPStateSpaceModel(
-        proxy_types=['d18O', 'UK37', 'Mg_Ca'],
-        weighting_method='balanced',  # Balanced proxy weighting
-        kernel_config=kernel_config,
-        mcmc_config=mcmc_config,
-        calibration_params=data['calibration_params'],
-        random_state=42
-    )
-    
-    print("Fitting model (this may take a minute)...")
-    # Fit model with reduced iterations for quick demo
-    model.fit(
-        data['proxy_data'],
-        training_iterations=200,  # Reduced for demo
-        run_mcmc=run_mcmc        # Disable MCMC temporarily
-    )
-    
-    # Generate test points for prediction (must match true_sst length)
-    test_ages = np.linspace(0, 500, len(data['true_sst']))
-    
-    print("Evaluating model performance...")
-    # Evaluate model
-    metrics = model.evaluate(test_ages, data['true_sst'])
-    
-    print("\nPerformance metrics:")
-    for metric, value in metrics.items():
-        print(f"  {metric}: {value:.4f}")
-    
-    print("\nDetecting abrupt transitions...")
-    # Detect transitions
-    transitions = model.detect_abrupt_transitions(test_ages)
-    print(f"Detected transitions at ages: {transitions}")
-    print(f"True transitions: {data['transition_ages']}")
-    
-    print("\nGenerating visualizations...")
-    # Plot reconstruction
-    fig = model.plot_reconstruction(
-        test_ages,
-        proxy_data_dict=data['proxy_data'],
-        true_sst=data['true_sst'],
-        detected_transitions=transitions,
-        figure_path=os.path.join(output_dir, "reconstruction.png")
-    )
-    
-    # Plot parameter posteriors from MCMC
-    if hasattr(model, 'mcmc_sampler') and model.mcmc_sampler is not None:
-        fig = model.plot_parameter_posterior(
-            figure_path=os.path.join(output_dir, "parameter_posteriors.png")
-        )
-    
-    print(f"\nResults saved to {output_dir}")
-    print("\nQuick demo completed!")
-    print("\nTo run with custom parameters, try:")
-    print("python main.py --proxy_types d18O UK37 --weighting_method balanced --kernel_type adaptive_matern")
-    
-    return model, data
+    Parameters:
+    -----------
+    csv_file : str, optional
+        Path to CSV file
+    output_dir : str, optional
+        Output directory
+    """
+    try:
+        print("\nStarting enhanced demo with matplotlib-style approach...")
+        print("=" * 60)
+        print("MULTI-OUTPUT BAYESIAN GP MODEL")
+        print("With Composite Kernels and Detailed Structure")
+        print("=" * 60)
+        
+        print("This demonstration shows:")
+        print("  1. Composite kernels with periodic components for Milankovitch cycles")
+        print("  2. Direct posterior sampling for detailed structure")
+        print("  3. Multi-output model with more realistic uncertainty")
+        print("  4. Transition detection with high sensitivity")
+        
+        print(f"\nUsing device: cpu")
+        
+        # Create output directory
+        os.makedirs(output_dir, exist_ok=True)
+        
+        # Initialize model
+        model = MultiOutputBayesianGP(random_state=42)
+        
+        # Load data with maximum age of 800 kyr
+        print(f"\nLoading data from {csv_file}...")
+        if not model.load_data(csv_file, max_age=800):
+            print("Error loading data. Exiting.")
+            return False
+        
+        # Fit model
+        print("\nFitting model with hyperparameter optimization and direct sampling...")
+        start_time = time.time()
+        
+        # Using matplotlib-style direct sampling
+        model.fit(optimize=True, n_samples=100)
+        
+        # Print execution time
+        exec_time = time.time() - start_time
+        print(f"\nModel fitting completed in {exec_time:.2f} seconds")
+        
+        # Generate predictions
+        print("\nGenerating high-resolution predictions on test grid...")
+        test_ages = np.linspace(0, 800, 1000)
+        
+        # Plot reconstruction
+        print("\nCreating visualization plots...")
+        fig = model.plot_reconstruction(test_ages, output_dir)
+        
+        print("\nDemo completed successfully!")
+        print(f"Results saved in {output_dir}/")
+        print("=" * 60)
+        
+        return True
+        
+    except Exception as e:
+        print(f"\nERROR during model fitting: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        
+        print("\nTry running the script again or check that the data file is correct.")
+        print("\nDemo failed to complete. Please check the error messages above.")
+        return False
 
 
 if __name__ == "__main__":
-    model, data = run_quick_demo()
+    # Get CSV file from command line argument
+    if len(sys.argv) > 1:
+        csv_file = sys.argv[1]
+    else:
+        csv_file = "ODP722.csv"
+        
+    # Get output directory from command line argument
+    if len(sys.argv) > 2:
+        output_dir = sys.argv[2]
+    else:
+        output_dir = "outputs"
+        
+    # Run demo
+    run_quick_demo(csv_file, output_dir)

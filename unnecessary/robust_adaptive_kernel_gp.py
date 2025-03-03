@@ -802,7 +802,7 @@ class RobustAdaptiveKernelGP:
         losses = []
         
         # Use robust numerical settings
-        with gpytorch.settings.cholesky_jitter(1e-4):
+        with gpytorch.settings.cholesky_jitter(1e-3):
             for i in range(training_iterations):
                 # Zero gradients
                 optimizer.zero_grad()

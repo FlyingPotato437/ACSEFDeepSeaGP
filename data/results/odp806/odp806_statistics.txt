@@ -1,0 +1,18 @@
+ODP806 Analysis Statistics
+=========================
+
+Age Range: 4.30 to 470.00 kyr
+Mean SST: 25.09°C
+Median SST: 24.87°C
+SST Range: 21.06°C to 30.28°C (9.21°C)
+Mean 95% CI Width: 2.66°C
+Training Time: 4.71 seconds
+
+Detected Transitions:
+  1. Age: 11.76 kyr, Magnitude: 6.92°C
+  2. Age: 73.29 kyr, Magnitude: 6.54°C
+  3. Age: 127.37 kyr, Magnitude: 7.06°C
+  4. Age: 245.31 kyr, Magnitude: 5.15°C
+  5. Age: 425.25 kyr, Magnitude: 9.21°C
+
+Mean Transition Magnitude: 6.98°C

@@ -561,7 +561,7 @@ class AdaptiveKernelLengthscaleGP:
         ], lr=learning_rate)
         
         # Perform alternating optimization
-        with gpytorch.settings.cholesky_jitter(1e-4):
+        with gpytorch.settings.cholesky_jitter(1e-3):
             self.loss_history = self._alternating_optimization(
                 optimizer, 
                 self.training_iterations,
